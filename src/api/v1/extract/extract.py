@@ -1,6 +1,6 @@
 import os
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from services import extract as service_extract
+from src.services import extract as service_extract
 
 extract_router = APIRouter(prefix="/extract")
 

@@ -2,10 +2,10 @@ import json
 import logging
 from fastapi import HTTPException
 
-from config.config import config
-from core.generator import Generator
-from models.invoice import Invoice
-from services.prompt_builder import build_prompt
+from src.config.config import config
+from src.core.generator import Generator
+from src.models.invoice import Invoice
+from .prompt_builder import build_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -17,9 +17,9 @@ async def extract_document(
     messages = build_prompt(file_content, content_type)
 
     # 2. Call Generator
-    generator = Generator(config, temperature=0)
+    generator = Generator(config)
     try:
-        response = await generator.generate(messages)
+        response = await generator.generate(messages, temperature=0)
     except Exception as e:
         logger.error(f"Generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"LLM Generation failed: {str(e)}")

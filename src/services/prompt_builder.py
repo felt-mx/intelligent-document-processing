@@ -1,6 +1,6 @@
 import base64
 from typing import List, Dict, Any
-from services.system_prompt import get_system_prompt, get_user_prompt
+from .system_prompt import get_system_prompt, get_user_prompt
 
 
 def build_prompt(file_content: bytes, content_type: str) -> List[Dict[str, Any]]:

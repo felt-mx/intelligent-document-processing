@@ -13,7 +13,7 @@ class Config:
     @property
     def vllm_gen_url(self):
         if self.vllm_api_url and self.vllm_gen_api_port:
-            return f"{self.vllm_api_url}:{self.vllm_gen_api_port}"
+            return f"http://{self.vllm_api_url}:{self.vllm_gen_api_port}"
         return self.vllm_api_url  # Fallback or None
 
 
