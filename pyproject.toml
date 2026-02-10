@@ -1,0 +1,14 @@
+[project]
+name = "intelligent-document-processing"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dotenv>=0.9.9",
+    "fastapi>=0.128.6",
+    "gunicorn>=25.0.3",
+    "httpx>=0.28.1",
+    "pypdf>=6.7.0",
+    "uvicorn>=0.40.0",
+]
