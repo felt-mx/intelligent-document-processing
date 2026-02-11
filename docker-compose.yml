@@ -3,8 +3,8 @@ services:
     container_name: idp
     build: .
     ports:
-      - "19010:8000"
+      - "19011:8000"
     environment:
-      - VLLM_API_URL=192.168.250.142
-      - VLLM_GEN_API_PORT=9010
-      - VLLM_GEN_MODEL_NAME=reinforce20001/Qwen3-VL-30B-A3B-Thinking-NVFP4
+      - VLLM_API_URL=YOUR_VLLM_API_URL
+      - VLLM_GEN_API_PORT=YOUR_VLLM_GEN
+      - VLLM_GEN_MODEL_NAME=YOUR_VLLM_GEN_MODEL_NAME
