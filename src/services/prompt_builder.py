@@ -1,12 +1,39 @@
 import base64
+import io
 import logging
 from typing import List, Dict, Any
 import fitz
+from PIL import Image
 from .system_prompt import get_system_prompt, get_user_prompt
 
 logger = logging.getLogger(__name__)
 
 PDF_CONTENT_TYPES = {"application/pdf"}
+
+
+def _upscale_image_if_needed(file_content: bytes, min_width: int = 2480) -> str:
+    """Checks image width and upscales using PIL if below threshold."""
+    img = Image.open(io.BytesIO(file_content))
+    width, height = img.size
+
+    if width < min_width:
+        scale = min_width / width
+        # Limit scale to 8.0 to prevent massive memory usage
+        scale = min(scale, 8.0)
+
+        new_size = (int(width * scale), int(height * scale))
+        # Use Resampling.LANCZOS for high-quality upscaling
+        img = img.resize(new_size, Image.Resampling.LANCZOS)
+
+        # Convert back to bytes
+        buffer = io.BytesIO()
+        img.save(buffer, format="PNG")
+        processed_bytes = buffer.getvalue()
+    else:
+        processed_bytes = file_content
+
+    b64 = base64.b64encode(processed_bytes).decode("utf-8")
+    return f"data:image/png;base64,{b64}"
 
 
 def _process_image_page(page, min_width=2000):
@@ -48,30 +75,22 @@ def build_prompt(file_content: bytes, content_type: str) -> List[Dict[str, Any]]
     system_prompt = get_system_prompt()
     user_prompt = get_user_prompt()
 
-    mime_map = {
-        "application/pdf": "pdf",
-        "image/jpeg": "jpeg",
-        "image/jpg": "jpeg",
-        "image/png": "png",
-        "image/tiff": "tiff",
-        "image/bmp": "bmp",
-        "image/webp": "webp",
-    }
-
-    filetype = mime_map.get(content_type)
-
-    image_urls = None
-    if filetype:
+    if content_type == "application/pdf":
         try:
-            image_urls = _convert_to_images(file_content, filetype)
+            image_urls = _convert_to_images(file_content, "pdf")
         except Exception as e:
-            logger.warning(
-                f"Fitz processing failed for {filetype}, attempting fallback: {e}"
-            )
+            logger.warning(f"Fitz PDF processing failed: {e}")
 
-    if not image_urls:
-        base64_content = base64.b64encode(file_content).decode("utf-8")
-        image_urls = [f"data:{content_type};base64,{base64_content}"]
+    elif content_type.startswith("image/"):
+        try:
+            # Handle images: check size and upscale if needed
+            url = _upscale_image_if_needed(file_content, min_width=2480)
+            image_urls = [url]
+        except Exception as e:
+            logger.error(f"Image upscaling failed: {e}")
+            # Fallback to raw content if PIL fails
+            b64 = base64.b64encode(file_content).decode("utf-8")
+            image_urls = [f"data:{content_type};base64,{b64}"]
 
     user_content: List[Dict[str, Any]] = [{"type": "text", "text": user_prompt}]
     for url in image_urls:

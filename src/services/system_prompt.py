@@ -2,6 +2,7 @@ def get_system_prompt() -> str:
     return f"""
         You are an expert invoice parser.
         Your task is to extract structured invoice data from messy OCR text.
+        NEVER hallucinate or invent any data. Strictly only extract ALL that is present in the images.
 
         Rules:
         1. If a field is missing or unclear, output null — do not guess.
@@ -21,7 +22,7 @@ def get_user_prompt() -> str:
         Extract the following fields from the file. Follow the exact format and rules.
 
         Field definitions:
-        InvoiceNo — Unique invoice number assigned by the seller.
+        InvoiceNo — Invoice number assigned or invoice code.
         InvoiceDate (dd/MM/yyyy HH:mm) — Date and time the invoice was issued. Default time to 00:00 if no time is specified.
         CurrencyCode — 3-letter ISO 4217 code (e.g., USD, MYR, EUR).
         ExchangeRate — Rate used to convert from invoice currency to base currency.
