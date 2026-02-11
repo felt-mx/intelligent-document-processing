@@ -20,7 +20,7 @@ class Generator:
         if tool_choice:
             payload["tool_choice"] = tool_choice
 
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=httpx.Timeout(300.0)) as client:
             response = await client.post(
                 f"{self.config.vllm_gen_url}/v1/chat/completions",
                 json=payload,

@@ -21,13 +21,26 @@ async def extract_document(
     try:
         response = await generator.generate(messages, temperature=0)
     except Exception as e:
-        logger.error(f"Generation failed: {e}")
-        raise HTTPException(status_code=500, detail=f"LLM Generation failed: {str(e)}")
+        logger.error(f"Generation failed: {type(e).__name__}: {repr(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"LLM Generation failed: {type(e).__name__}: {str(e)}",
+        )
 
     # 3. Parse Response
     try:
-        data = json.loads(response)
+        # generator returns a message dict like {"role": "assistant", "content": "..."}
+        # extract the content string before parsing as JSON
+        if isinstance(response, dict):
+            content = response.get("content", "")
+        else:
+            content = response
+        data = json.loads(content)
         return Invoice(**data)
     except Exception as e:
-        logger.error(f"Validation failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Data validation failed: {str(e)}")
+        logger.error(f"Validation failed: {type(e).__name__}: {repr(e)}")
+        logger.error(f"Raw LLM response: {response}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"Data validation failed: {type(e).__name__}: {str(e)}",
+        )

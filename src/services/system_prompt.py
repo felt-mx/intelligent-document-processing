@@ -5,13 +5,14 @@ def get_system_prompt() -> str:
 
         Rules:
         1. If a field is missing or unclear, output null — do not guess.
-        2. Dates must be in dd/MM/yyyy HH:mm or dd/MM/yyyy as specified.
-        3. Currency codes must follow ISO 4217.
-        4. Country codes must follow ISO 3166 A-3.
-        5. Parse all item lines into an array.
-        6. Return only valid JSON — no explanations, comments, or extra text.
-        7. Ignore irrelevant text and handle common OCR errors like broken lines or spacing issues.
-        8. All fields that represent quantities, prices, amounts, percentages, or other numeric values must be returned as numbers (either integer or double format, without quotes).
+        2. ALWAYS ensure the fields are mapped correctly as per definitions. Do NOT mix up fields.
+        3. Dates must be in dd/MM/yyyy HH:mm or dd/MM/yyyy as specified.
+        4. Currency codes must follow ISO 4217.
+        5. Country codes must follow ISO 3166 A-3.
+        6. Parse all item lines into an array.
+        7. Return ONLY valid JSON — no explanations, comments, or extra text.
+        8. Ignore irrelevant text and handle common OCR errors like broken lines or spacing issues.
+        9. All fields that represent quantities, prices, amounts, percentages, or other numeric values must be returned as numbers (either integer or double format, without quotes).
         """
 
 
