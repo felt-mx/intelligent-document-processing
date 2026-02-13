@@ -17,6 +17,8 @@ async def extract_document(file: UploadFile = File(...)):
         )
 
     content = await file.read()
-    return await service_extract.extract_document(
+    data = await service_extract.extract_document(
         content, file.content_type or "application/octet-stream"
     )
+
+    return {"success": True, "data": data}
