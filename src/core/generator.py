@@ -6,12 +6,22 @@ class Generator:
     def __init__(self, config: Config):
         self.config = config
 
-    async def generate(self, messages, tools=None, tool_choice=None, temperature=0.7):
+    async def generate(
+        self,
+        messages,
+        tools=None,
+        tool_choice=None,
+        temperature=0.7,
+        enable_thinking=False,
+    ):
         payload = {
             "model": self.config.vllm_gen_model_name,
             "messages": messages,
             "stream": False,
             "temperature": temperature,
+            "chat_template_kwargs": {
+                "enable_thinking": enable_thinking,
+            },
         }
 
         if tools:
