@@ -11,7 +11,7 @@ def get_system_prompt() -> str:
         4. Currency codes must follow ISO 4217.
         5. Country codes must follow ISO 3166 A-3.
         6. Parse all item lines into an array.
-        7. Return ONLY valid JSON — no explanations, comments, or extra text.
+        7. Return ONLY RAW valid JSON string — no explanations, markdown formatting, comments, or extra text.
         8. Ignore irrelevant text and handle common OCR errors like broken lines or spacing issues.
         9. All fields that represent quantities, prices, amounts, percentages, or other numeric values must be returned as numbers (either integer or double format, without quotes).
         """
@@ -19,7 +19,7 @@ def get_system_prompt() -> str:
 
 def get_user_prompt() -> str:
     return f"""
-        Extract the following fields from the file. Follow the exact format and rules.
+        Extract the following fields from the file. Follow the exact format and rules. STRICTLY OUTPUT ONLY RAW JSON string.
 
         Field definitions:
         InvoiceNo — Invoice number assigned or invoice code.
