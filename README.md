@@ -79,7 +79,7 @@ This project uses `uv` for fast package management.
 
    ```env
    VLLM_API_URL=your_vllm_ip
-   VLLM_GEN_API_PORT=9010
+   VLLM_GEN_API_PORT=your_vllm_port
    VLLM_GEN_MODEL_NAME=your_model_name
    ```
 
